@@ -4,10 +4,7 @@ from django.http import HttpResponse
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_POST
 
-import helpers
-
-SLACK_BOT_OAUTH_TOKEN = helpers.config("SLACK_BOT_OAUTH_TOKEN", default=None, cast=str)
-
+import slacky
 
 @csrf_exempt
 @require_POST
@@ -27,8 +24,24 @@ def slack_events_endpoint(request):
 
     if data_type == "url_verification":
         challenge = json_data.get("challenge")
+
         if challenge is None:
             return HttpResponse("Not Allowed", status=400)
         return HttpResponse(challenge, status=200)
+    elif data_type == "event_callback":
+        event = json_data.get("event") or {}
 
+        try:
+            message = event["blocks"][0]["elements"][0]["elements"][1]["text"]
+        except:
+            message = " ".join(event.get("text").split()[1:])
+
+        channel_id = event.get("channel")
+        user_id = event.get("user")
+        message_timestamp = event.get("ts")
+        thread_timestamp = event.get("thread_ts") or message_timestamp
+
+        response = slacky.send_message(message, channel_id=channel_id, user_id=user_id, thread_ts=thread_timestamp)
+
+        return HttpResponse("Success", status=response.status_code)
     return HttpResponse("Success", status=200)

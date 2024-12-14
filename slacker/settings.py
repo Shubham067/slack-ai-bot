@@ -28,7 +28,7 @@ SECRET_KEY = os.getenv("DJANGO_SECRET_KEY")
 DEBUG = True
 
 ALLOWED_HOSTS = ["127.0.0.1", "localhost", ".lhr.life"]
-CSRF_TRUSTED_ORIGINS = ["https://7e504690e2fe13.lhr.life"]
+CSRF_TRUSTED_ORIGINS = ["https://61bd1f415fe8e2.lhr.life"]
 
 
 # Application definition
