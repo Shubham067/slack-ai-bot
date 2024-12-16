@@ -6,10 +6,13 @@ from django.views.decorators.http import require_POST
 
 import slacky
 
+from .tasks import slack_message_task
+
 @csrf_exempt
 @require_POST
 def slack_events_endpoint(request):
     json_data = {}
+    allowed_data_type = ["url_verification", "event_callback"]
 
     try:
         json_data = json.loads(request.body.decode("utf-8"))
@@ -17,7 +20,6 @@ def slack_events_endpoint(request):
         pass
 
     data_type = json_data.get("type")
-    allowed_data_type = ["url_verification", "event_callback"]
 
     if data_type not in allowed_data_type:
         return HttpResponse("Not Allowed", status=400)
@@ -41,7 +43,17 @@ def slack_events_endpoint(request):
         message_timestamp = event.get("ts")
         thread_timestamp = event.get("thread_ts") or message_timestamp
 
-        response = slacky.send_message(message, channel_id=channel_id, user_id=user_id, thread_ts=thread_timestamp)
+        # response = slacky.send_message(message, channel_id=channel_id, user_id=user_id, thread_ts=thread_timestamp)
+        # slack_message_task.delay(message, channel_id=channel_id, user_id=user_id, thread_ts=thread_timestamp)
+        slack_message_task.apply_async(
+            kwargs = {
+                "message": message,
+                "channel_id": channel_id,
+                "user_id": user_id,
+                # "thread_ts": thread_timestamp
+            },
+            countdown = 0
+        )
 
-        return HttpResponse("Success", status=response.status_code)
+        return HttpResponse("Success", status=200)
     return HttpResponse("Success", status=200)

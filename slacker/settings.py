@@ -12,6 +12,7 @@ https://docs.djangoproject.com/en/5.1/ref/settings/
 
 from pathlib import Path
 import os
+import helpers
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -41,6 +42,8 @@ INSTALLED_APPS = [
     "django.contrib.messages",
     "django.contrib.staticfiles",
     "aibot",
+    "django_celery_beat",
+    "django_celery_results"
 ]
 
 MIDDLEWARE = [
@@ -125,3 +128,15 @@ STATIC_URL = "static/"
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
+
+# CELERY CONFIG
+CELERY_BROKER_URL = helpers.config("CELERY_BROKER_URL", default = None, cast = str)
+CELERY_RESULT_BACKEND = "django-db"
+CELERY_BEAT_SCHEDULER = "django_celery_beat.schedulers.DatabaseScheduler"
+CELERY_BROKER_CONNECTION_RETRY_ON_STARTUP = True
+
+# redis_backend_use_ssl
+CELERY_REDIS_BACKEND_USE_SSL = True
+
+# broker_use_ssl
+CELERY_BROKER_USE_SSL = True
