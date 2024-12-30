@@ -43,7 +43,9 @@ def slack_events_endpoint(request):
         message_timestamp = event.get("ts")
         thread_timestamp = event.get("thread_ts") or message_timestamp
 
-        # response = slacky.send_message(message, channel_id=channel_id, user_id=user_id, thread_ts=thread_timestamp)
+        # from . import utils
+        # gemini_response = utils.chat_with_gemini(message, model="gemini-1.5-flash-8b")
+        # response = slacky.send_message(gemini_response, channel_id=channel_id, user_id=user_id)
         # slack_message_task.delay(message, channel_id=channel_id, user_id=user_id, thread_ts=thread_timestamp)
         slack_message_task.apply_async(
             kwargs = {

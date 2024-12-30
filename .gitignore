@@ -129,6 +129,7 @@ venv/
 ENV/
 env.bak/
 venv.bak/
+bot/
 
 # Spyder project settings
 .spyderproject
@@ -167,6 +168,8 @@ cython_debug/
 \*.pem
 datadump.json
 *.png
+data/
+nbs/
 
 # Backup files
 *.bak
@@ -179,4 +182,4 @@ datadump.json
 !.vscode/launch.json 
 !.vscode/extensions.json 
 .history
-*.txt
+instructions.txt

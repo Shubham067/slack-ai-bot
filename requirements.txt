@@ -1,0 +1,13 @@
+Django
+python-decouple
+python-dotenv
+requests
+Celery
+Redis
+django-celery-beat
+django-celery-results
+google-generativeai
+jupyter
+llama-index
+llama-index-vector-stores-upstash
+upstash-vector
